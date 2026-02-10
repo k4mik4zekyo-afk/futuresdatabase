@@ -229,10 +229,10 @@ ORDER BY td.session_date;
 ```sql
 SELECT 
     td.session_date,
-    MIN(b.open) as session_open,
+    (SELECT open FROM bars WHERE trade_day_id = td.id AND halt_period = 0 ORDER BY timestamp LIMIT 1) as session_open,
     MAX(b.high) as session_high,
     MIN(b.low) as session_low,
-    MAX(b.close) as session_close,
+    (SELECT close FROM bars WHERE trade_day_id = td.id AND halt_period = 0 ORDER BY timestamp DESC LIMIT 1) as session_close,
     SUM(b.volume) as total_volume
 FROM bars b
 JOIN trade_days td ON b.trade_day_id = td.id
